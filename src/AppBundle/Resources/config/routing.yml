@@ -1,0 +1,8 @@
+front_homepage:
+    path:     /
+    defaults: { _controller: AppBundle:Cube:index }
+
+front_sendcases:
+    path:     /sendcases
+    defaults: { _controller: "AppBundle:Cube:assignCases" }
+    requirements: { _method: post }
