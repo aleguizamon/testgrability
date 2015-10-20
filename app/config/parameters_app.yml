@@ -1,0 +1,9 @@
+parameters:
+    lower_limit_t: 1
+    upper_limit_t: 50
+    lower_limit_n: 1
+    upper_limit_n: 100
+    lower_limit_m: 1
+    upper_limit_m: 1000
+    lower_limit_w: -1000000000
+    upper_limit_w: 1000000000

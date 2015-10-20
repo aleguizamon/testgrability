@@ -1,10 +1,22 @@
 {% extends '::frontend.html.twig' %}
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        #testcase,#operation_area,#query_area,#update_area{display: none;}
+        .bs-callout h4{margin-bottom: 15px;}
+    </style>
+{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
         jQuery(document).ready(function() {
             App.init({
-                URL_SENDCASES: '{{ path('front_sendcases') }}'
+                URL_SENDCASES: '{{ path('front_sendcases') }}',
+                URL_SENDTESTPARAMS: '{{ path('front_sendtestparams') }}',
+                URL_SENDOPERATION: '{{ path('front_sendoperation') }}',
+                URL_REGENERATE: '{{ path('front_regenerate') }}',
+                URL_RESET: '{{ path('front_reset') }}',
+                BASEPATH: '{{ path('front_homepage') }}'
             });
         });
     </script>
@@ -30,31 +42,31 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-9">
-                        <input name="cases" id="cases" type="number" id="disabledTextInput" class="form-control" placeholder="Cantidad de casos de prueba (T)" data-toggle="popover" data-placement="top" data-trigger="hover" title="Casos de Prueba (T)" data-content="Ingrese la cantidad de casos de prueba">
+                        <input name="cases" id="cases" type="number" class="form-control" placeholder="Cantidad de casos de prueba (T)" data-toggle="popover" data-placement="top" data-trigger="hover" title="Casos de Prueba (T)" data-content="Ingrese la cantidad de casos de prueba">
                     </div>
                     <div class="col-xs-3">
                         <button type="button" class="btn btn-primary btn-block" id="startBtn">Iniciar Prueba</button>
                     </div>
                 </div>
 
-                <div class="bs-callout bs-callout-danger" id="callout-buttons-ie-disabled">
-                    <h4>Caso de prueba #1/5:</h4>
+                <div class="bs-callout bs-callout-danger" id="testcase">
+                    <h4>Caso de prueba #<span id="testcase_current"></span>/<span id="testcase_total"></span>:</h4>
 
                     <p class="form-group">
                         <div class="row">
                             <div class="col-xs-5">
-                                <input type="text" class="form-control" placeholder="Tamaño de la matriz (N)" data-toggle="popover" data-placement="top" data-trigger="hover" title="Tamaño de la matriz (N)" data-content="Ingrese el tamaño de la matriz NxNxN">
+                                <input type="number" name="size" id="size" class="form-control" placeholder="Tamaño de la matriz (N)" data-toggle="popover" data-placement="top" data-trigger="hover" title="Tamaño de la matriz (N)" data-content="Ingrese el tamaño de la matriz NxNxN">
                             </div>
                             <div class="col-xs-5">
-                                <input type="text" class="form-control" placeholder="Número de operaciones (M)" data-toggle="popover" data-placement="top" data-trigger="hover" title="Número de operaciones (M)" data-content="Ingrese el número de operaciones a realizar">
+                                <input type="number" name="operations" id="operations" class="form-control" placeholder="Número de operaciones (M)" data-toggle="popover" data-placement="top" data-trigger="hover" title="Número de operaciones (M)" data-content="Ingrese el número de operaciones a realizar">
                             </div>
                             <div class="col-xs-2">
-                                <button type="button" class="btn btn-primary btn-block" id="startOperation">Iniciar</button>
+                                <button type="button" class="btn btn-primary btn-block" id="startOperationBtn">Iniciar</button>
                             </div>
                         </div>
                     </p>
 
-                    <div class="bs-callout bs-callout-warning" id="callout-buttons-ie-disabled">
+                    <div class="bs-callout bs-callout-warning" id="operation_area">
                         <div style="width: auto;float: right;">
                             <label class="radio-inline">
                                 <input type="radio" name="operation" id="opcUpdate" value="U"> Update
@@ -63,30 +75,30 @@
                                 <input type="radio" name="operation" id="opcQuery" value="Q"> Query
                             </label>
                         </div>
-                        <h4 >Operación #1/8:</h4>
-                        <p class="form-group">
+                        <h4 >Operación #<span id="operation_area_current"></span>/<span id="operation_area_total"></span>:</h4>
+                        <div class="form-group" id="update_area">
                             <div class="row">
                                 <div class="col-xs-10">
-                                    <input type="text" class="form-control" placeholder="X Y Z W" data-toggle="popover" data-placement="top" data-trigger="hover" title="Coordenadas" data-html="true" data-content="Separe cada coordenada con un espacio en blanco: X Y Z W">
+                                    <input type="text" name="update_content" id="update_content" class="form-control" placeholder="X Y Z W" data-toggle="popover" data-placement="top" data-trigger="hover" title="Coordenadas" data-html="true" data-content="Separe cada coordenada con un espacio en blanco: X Y Z W">
                                 </div>
                                 <div class="col-xs-2">
                                     <button type="button" class="btn btn-primary btn-block" id="updateBtn">Update</button>
                                 </div>
                             </div>
-                        </p>
-                        <p class="form-group">
+                        </div>
+                        <div class="form-group" id="query_area">
                             <div class="row">
                                 <div class="col-xs-5">
-                                    <input type="text" class="form-control" placeholder="X1 Y1 Z1" data-toggle="popover" data-placement="top" data-trigger="hover" title="Coordenada A" data-content="Separe cada coordenada con un espacio en blanco: X Y Z">
+                                    <input type="text" name="query_content_a" id="query_content_a" class="form-control" placeholder="X1 Y1 Z1" data-toggle="popover" data-placement="top" data-trigger="hover" title="Coordenada A" data-content="Separe cada coordenada con un espacio en blanco: X Y Z">
                                 </div>
                                 <div class="col-xs-5">
-                                    <input type="text" class="form-control" placeholder="X2 Y2 Z2" data-toggle="popover" data-placement="top" data-trigger="hover" title="Coordenada B" data-content="Separe cada coordenada con un espacio en blanco: X Y Z">
+                                    <input type="text" name="query_content_b" id="query_content_b" class="form-control" placeholder="X2 Y2 Z2" data-toggle="popover" data-placement="top" data-trigger="hover" title="Coordenada B" data-content="Separe cada coordenada con un espacio en blanco: X Y Z">
                                 </div>
                                 <div class="col-xs-2">
                                     <button type="button" class="btn btn-primary btn-block" id="queryBtn">Query</button>
                                 </div>
                             </div>
-                        </p>
+                        </div>
                     </div>
 
 
@@ -107,8 +119,8 @@
                     <table class="table table-bordered table-striped">
                         <colgroup>
                             <col class="col-xs-3">
-                            <col class="col-xs-7">
-                            <col class="col-xs-2">
+                            <col class="col-xs-6">
+                            <col class="col-xs-3">
                         </colgroup>
                         <thead>
                         <tr>
@@ -117,17 +129,8 @@
                             <th>Resultado</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        <tr>
-                            <td class="text-center">#1</td>
-                            <td >#1 - Update(1 1 1 4)</td>
-                            <td class="text-center">2</td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">#1</td>
-                            <td >#2 - Query(1 1 1 2 2 2)</td>
-                            <td class="text-center">3</td>
-                        </tr>
+                        <tbody id="body_result">
+
                         </tbody>
                     </table>
                 </div>

@@ -6,3 +6,23 @@ front_sendcases:
     path:     /sendcases
     defaults: { _controller: "AppBundle:Cube:assignCases" }
     requirements: { _method: post }
+
+front_sendtestparams:
+    path:     /sendtestparams
+    defaults: { _controller: "AppBundle:Cube:assignTestParams" }
+    requirements: { _method: post }
+
+front_sendoperation:
+    path:     /sendoperation
+    defaults: { _controller: "AppBundle:Cube:executeOperation" }
+    requirements: { _method: post }
+
+front_regenerate:
+    path:     /regenerate
+    defaults: { _controller: "AppBundle:Cube:regenerate" }
+    requirements: { _method: post }
+
+front_reset:
+    path:     /reset
+    defaults: { _controller: "AppBundle:Cube:reset" }
+    requirements: { _method: post }
